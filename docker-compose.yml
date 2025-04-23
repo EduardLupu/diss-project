@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: 'postgres:15-alpine'
+    env_file:
+      - environment/postgres.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./server/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    networks:
+      - diss-network
+    restart: always
+
+  pgadmin:
+    image: 'dpage/pgadmin4:6.15'
+    env_file:
+      - environment/pgadmin.env
+    ports:
+      - "8080:80"
+    networks:
+      - diss-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: always
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - diss-network
+    environment:
+      NODE_ENV: production
+    restart: always
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    networks:
+      - diss-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dissdb
+      SPRING_DATASOURCE_USERNAME: devuser
+      SPRING_DATASOURCE_PASSWORD: devpassword
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+    restart: always
+
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  diss-network:
+    driver: bridge
+    name: diss-network
