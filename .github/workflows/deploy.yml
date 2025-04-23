@@ -1,0 +1,34 @@
+name: Deploy to Azure VM (Copy Files & Rebuild)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Copy project files to Azure VM
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          passphrase:
+          source: "."
+          target: "/home/${{ secrets.AZURE_VM_USER }}/diss-project"
+          rm: true  # Remove the destination folder first to ensure a clean copy
+
+      - name: Rebuild and restart Docker Compose
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          script: |
+            cd /home/${{ secrets.AZURE_VM_USER }}/diss-project
+            docker compose down
+            docker compose up --build -d
