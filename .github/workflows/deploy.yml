@@ -1,8 +1,7 @@
 name: Deploy to Azure VM (Copy Files & Rebuild)
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   deploy:
