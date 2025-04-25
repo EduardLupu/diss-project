@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import UserMenu from '@/components/UserMenu'
 
 export default function DashboardLayout({ children }) {
   const router = useRouter()
+  const pathname = usePathname()
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -20,6 +21,13 @@ export default function DashboardLayout({ children }) {
 
   if (!user) {
     return null
+  }
+
+  const isActive = (path) => {
+    if (path === '/dashboard') {
+      return pathname === path
+    }
+    return pathname.startsWith(path)
   }
 
   return (
@@ -36,19 +44,31 @@ export default function DashboardLayout({ children }) {
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
                   href="/dashboard"
-                  className="border-teal-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    isActive('/dashboard')
+                      ? 'border-teal-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
                 >
                   Dashboard
                 </Link>
                 <Link
                   href="/dashboard/library"
-                  className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    isActive('/dashboard/library')
+                      ? 'border-teal-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
                 >
                   Library
                 </Link>
                 <Link
                   href="/dashboard/lessons"
-                  className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    isActive('/dashboard/lessons')
+                      ? 'border-teal-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
                 >
                   Lessons
                 </Link>
