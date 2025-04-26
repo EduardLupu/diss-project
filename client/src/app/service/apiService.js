@@ -158,8 +158,6 @@ const apiService = {
         const loginResponse = await apiService.post('api/user/authenticate', credentials);
         const token = loginResponse.token;
 
-console.log('token', token);
-
         if (token) {
           localStorage.setItem('authToken', token);
         } else {
@@ -167,8 +165,6 @@ console.log('token', token);
         }
 
         const user = await apiService.get(`/api/user/getUserInfoByToken`);
-
-console.log('user', user);
 
         // Store user data
         if (user) {
@@ -181,6 +177,20 @@ console.log('user', user);
       } catch (error) {
         console.error('Login error:', error);
         throw Object.assign({}, error, {message: 'Login failed. Please check your credentials.'});
+      }
+    },
+
+    /**
+     * Register new user
+     * @param {Object} userData - User registration data
+     * @returns {Promise<any>} - Response data
+     */
+    async register(userData) {
+      try {
+        const response = await apiService.post('api/user/register', userData);
+        return response;
+      } catch (error) {
+        throw error;
       }
     },
 
