@@ -82,14 +82,11 @@ public class UserService {
         return userInfoRepository.findByUsername(username);
     }
 
-    public UserInfo getUserByToken(String authorizationHeader) {
+    public Optional<UserInfo> getUserByToken(String authorizationHeader) {
         String token = authorizationHeader.substring(7);
         System.out.println("Received token: " + token);
         String username = jwtService.extractUsername(token);
 
-        UserInfo user = userInfoRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        return user;
+        return userInfoRepository.findByUsername(username);
     }
 }

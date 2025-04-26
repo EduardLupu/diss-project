@@ -17,8 +17,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public void addUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> addUser(@RequestBody RegisterRequest registerRequest) {
         userService.addUser(registerRequest);
+        return ResponseEntity.ok("User registered successfully.");
     }
 
     @PostMapping("/authenticate")
@@ -27,12 +28,16 @@ public class UserController {
     }
 
     @GetMapping("/getUserInfo/{username}")
-    public UserInfo getUserInfo(@PathVariable String username) {
-        return userService.getUser(username).get();
+    public ResponseEntity<UserInfo> getUserInfo(@PathVariable String username) {
+        return userService.getUser(username)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/getUserInfoByToken")
-    public UserInfo getUserInfoByToken(@RequestHeader("Authorization") String authorizationHeader) {
-        return userService.getUserByToken(authorizationHeader);
+    public ResponseEntity<UserInfo> getUserInfoByToken(@RequestHeader("Authorization") String authorizationHeader) {
+        return userService.getUserByToken(authorizationHeader)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
