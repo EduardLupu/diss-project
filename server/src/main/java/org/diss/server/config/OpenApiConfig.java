@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         url = "https://diss.team/lol"
                 ),
                 description = "OpenApi documentation for Spring Security",
-                title = "OpenApi specification - Kun Alexandru",
+                title = "OpenApi specification - DISS Team",
                 version = "1.0",
                 license = @License(
                         name = "Licence name",
