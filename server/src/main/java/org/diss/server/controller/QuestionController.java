@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import org.diss.server.dto.QuestionWithoutAnswerDTO;
 import org.diss.server.entity.Question;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/api/question")
 public class QuestionController {
 
