@@ -79,14 +79,15 @@ public class UserService {
     }
 
     public Optional<UserInfo> getUser(String username) {
-        return userInfoRepository.findByEmail(username);
+        return userInfoRepository.findByUsername(username);
     }
 
     public UserInfo getUserByToken(String authorizationHeader) {
         String token = authorizationHeader.substring(7);
+        System.out.println("Received token: " + token);
         String username = jwtService.extractUsername(token);
 
-        UserInfo user = userInfoRepository.findByEmail(username)
+        UserInfo user = userInfoRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         return user;
