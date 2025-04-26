@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -20,4 +22,9 @@ public class Lesson {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @ElementCollection
+    @OrderColumn(name = "paragraph_order")
+    @Column(columnDefinition = "TEXT")
+    private List<String> paragraphs = new ArrayList<>();
 }
