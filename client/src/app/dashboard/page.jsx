@@ -9,7 +9,7 @@ const stats = [
   { name: 'Total Lessons', value: '12' },
   { name: 'Completed', value: '8' },
   { name: 'In Progress', value: '3' },
-  { name: 'Certificates', value: '2' }
+  { name: 'Badges', value: '2' }
 ]
 
 // Mock data for recent activity
@@ -22,9 +22,9 @@ const recentActivity = [
   },
   {
     id: 2,
-    title: 'Earned JavaScript Fundamentals Certificate',
+    title: 'Earned JavaScript Fundamentals Badge',
     date: '2024-03-10',
-    type: 'certificate'
+    type: 'badge'
   },
   {
     id: 3,
@@ -91,11 +91,11 @@ export default function DashboardPage() {
         </Link>
 
         <Link
-          href="/dashboard/certificates"
+          href="/dashboard/badges"
           className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
         >
           <div>
-            <h3 className="text-lg font-medium text-gray-900">Your Certificates</h3>
+            <h3 className="text-lg font-medium text-gray-900">Your Badges</h3>
             <p className="mt-1 text-sm text-gray-500">View your achievements</p>
           </div>
         </Link>
