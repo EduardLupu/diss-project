@@ -1,4 +1,38 @@
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost.d:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+      - /etc/nginx/conf.d
+    environment:
+      - DEFAULT_HOST=eduwave.eduardlupu.com
+    networks:
+      - diss-network
+    restart: always
+
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost.d:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+    environment:
+      - DEFAULT_EMAIL=lupu.edward2@gmail.com
+    networks:
+      - diss-network
+    restart: always
+
   postgres:
     image: 'postgres:15-alpine'
     env_file:
@@ -28,34 +62,36 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    ports:
-      - "80:3000"
-    networks:
-      - diss-network
+    expose:
+      - "3000"
     environment:
       NODE_ENV: production
+      VIRTUAL_HOST: eduwave.eduardlupu.com
+      LETSENCRYPT_HOST: eduwave.eduardlupu.com
+      LETSENCRYPT_EMAIL: lupu.edward2@gmail.com
+    networks:
+      - diss-network
     restart: always
 
   backend:
     build:
       context: ./server
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
     depends_on:
       - frontend
       - pgadmin
       - postgres
-    networks:
-      - diss-network
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dissdb
       SPRING_DATASOURCE_USERNAME: devuser
       SPRING_DATASOURCE_PASSWORD: devpassword
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_PROPERTIES_HIBERNATE_DDL_AUTO: update
+    networks:
+      - diss-network
     restart: always
-
 
 volumes:
   postgres_data:
