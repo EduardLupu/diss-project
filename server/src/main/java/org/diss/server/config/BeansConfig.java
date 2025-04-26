@@ -26,7 +26,7 @@ import java.util.List;
 public class BeansConfig {
 
     private final UserDetailsService userDetailsService;
-    private final List<String> allowedOrigins = List.of("http://localhost:4200","http://localhost:8080","http://localhost:3000");
+    private final List<String> allowedOrigins = List.of("http://localhost:4200","http://localhost:8080","http://localhost:3000","http://164.92.248.135:8080","http://164.92.248.135:3000");
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
