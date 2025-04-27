@@ -63,7 +63,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
     expose:
-      - "3000"
+      - "80"
     environment:
       NODE_ENV: production
       VIRTUAL_HOST: eduwave.eduardlupu.com
