@@ -71,7 +71,17 @@ export default function LessonPage({ params }) {
             setQuizResult(quizData)
           }
         }
-        
+
+        const completedSteps = await apiService.get(`/api/lesson-progress/${params.lessonId}/status`)
+        if (completedSteps.lastCompletedParagraphIndex > -1) {
+          setCurrentStep(Math.min(completedSteps.lastCompletedParagraphIndex + 1, lessonData.paragraphs.length - 1))
+          let steps = []
+          for (let i = 0; i <= completedSteps.lastCompletedParagraphIndex; i++) {
+            steps.push(i)
+          }
+          setCompletedSteps(steps)
+        }
+
         setError(null)
       } catch (err) {
         console.error('Error fetching lesson:', err)
@@ -107,12 +117,14 @@ export default function LessonPage({ params }) {
     }))
   }
 
-  const markCurrentStepComplete = () => {
+  const markCurrentStepComplete = async () => {
     // Only add to completed steps if not already there
     if (!completedSteps.includes(currentStep)) {
       const newCompletedSteps = [...completedSteps, currentStep]
       setCompletedSteps(newCompletedSteps)
       
+      await apiService.post(`/api/lesson-progress/${params.lessonId}/complete-paragraph/${currentStep}`)
+
       // Save updated progress
       localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
         step: currentStep,
