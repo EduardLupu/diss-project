@@ -3,25 +3,36 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import apiService from '../service/apiService'
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Mock login - in a real app, this would be an API call
-    if (email && password) {
-      const user = {
-        name: 'John Doe',
-        email: email
-      }
-      localStorage.setItem('user', JSON.stringify(user))
-      router.push('/dashboard')
-    } else {
+    
+    if (!email || !password) {
       setError('Please fill in all fields')
+      return
+    }
+    
+    try {
+      setIsLoading(true)
+      setError('')
+      
+      // Use the API service for login
+      await apiService.auth.login({ "email": email, "password": password })
+      
+      // Redirect to dashboard after successful login
+      router.push('/dashboard')
+    } catch (err) {
+      setError(err.message || 'Failed to login. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -102,9 +113,10 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                disabled={isLoading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:bg-teal-300"
               >
-                Sign in ✨
+                {isLoading ? 'Signing in...' : 'Sign in ✨'}
               </button>
             </div>
           </form>
@@ -121,4 +133,4 @@ export default function LoginPage() {
       </div>
     </div>
   )
-} 
+}
