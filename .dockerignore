@@ -1,0 +1,10 @@
+/docker/ssl
+postgres_data
+pgadmin_data
+certs
+vhost.d
+html
+*.log
+node_modules
+build
+dist

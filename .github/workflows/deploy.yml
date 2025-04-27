@@ -1,11 +1,15 @@
-name: Deploy to Azure VM (Copy Files & Rebuild)
+name: Deployment
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+    - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -16,12 +20,16 @@ jobs:
           host: ${{ secrets.AZURE_VM_HOST }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          passphrase:
-          source: "."
+          source: |
+            client/
+            server/
+            docker-compose.yml
+            .env
+            nginx.conf
           target: "/home/${{ secrets.AZURE_VM_USER }}/diss-project"
-          rm: true  # Remove the destination folder first to ensure a clean copy
+          rm: false
 
-      - name: Rebuild and restart Docker Compose
+      - name: Rebuild Docker and Restart
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.AZURE_VM_HOST }}
@@ -29,5 +37,4 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           script: |
             cd /home/${{ secrets.AZURE_VM_USER }}/diss-project
-            sudo docker compose down
             sudo docker compose up --build -d
