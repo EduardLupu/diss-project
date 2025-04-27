@@ -1,6 +1,6 @@
 // apiService.js
 
-const API_BASE_URL = 'https://164.92.248.135:8080';
+const API_BASE_URL = 'https://api.eduwave.eduardlupu.com';
 
 /**
  * API service for handling requests to the backend
