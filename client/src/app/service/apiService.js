@@ -1,6 +1,6 @@
 // apiService.js
 
-const API_BASE_URL = 'http://164.92.248.135:8080';
+const API_BASE_URL = 'https://164.92.248.135:8080';
 
 /**
  * API service for handling requests to the backend
