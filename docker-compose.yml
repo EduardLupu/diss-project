@@ -6,6 +6,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
       - /docker/ssl/certs:/etc/nginx/certs
       - /docker/ssl/vhost.d:/etc/nginx/vhost.d
       - /docker/ssl/html:/usr/share/nginx/html
@@ -19,8 +20,6 @@ services:
   nginx-proxy-acme:
     image: nginxproxy/acme-companion
     container_name: nginx-proxy-acme
-    volumes_from:
-      - nginx-proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /docker/ssl/certs:/etc/nginx/certs
