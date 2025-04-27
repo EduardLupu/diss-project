@@ -77,8 +77,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    ports:
-       - "8080:8080"
+    expose:
+      - "8080"
     depends_on:
       - frontend
       - pgadmin
@@ -89,6 +89,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: devpassword
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_PROPERTIES_HIBERNATE_DDL_AUTO: update
+      VIRTUAL_HOST: api.eduwave.eduardlupu.com
+      LETSENCRYPT_HOST: eduwave.eduardlupu.com
+      LETSENCRYPT_EMAIL: lupu.edward2@gmail.com
     networks:
       - diss-network
     restart: always
