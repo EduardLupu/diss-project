@@ -1,7 +1,8 @@
 package org.diss.server.controller;
-
+import jakarta.validation.Valid;
 import org.diss.server.dto.AuthRequest;
 import org.diss.server.dto.AuthenticationResponse;
+import org.diss.server.dto.ChangePasswordRequest;
 import org.diss.server.dto.RegisterRequest;
 
 import org.diss.server.entity.UserInfo;
@@ -39,5 +40,13 @@ public class UserController {
         return userService.getUserByToken(authorizationHeader)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestBody @Valid ChangePasswordRequest request
+    ) {
+        userService.changePassword(request);
+        return ResponseEntity.ok().build();
     }
 }

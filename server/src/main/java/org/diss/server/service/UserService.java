@@ -3,6 +3,7 @@ package org.diss.server.service;
 import lombok.RequiredArgsConstructor;
 import org.diss.server.dto.AuthRequest;
 import org.diss.server.dto.AuthenticationResponse;
+import org.diss.server.dto.ChangePasswordRequest;
 import org.diss.server.dto.RegisterRequest;
 import org.diss.server.entity.UserInfo;
 import org.diss.server.repository.RoleRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -88,5 +90,17 @@ public class UserService {
         String username = jwtService.extractUsername(token);
 
         return userInfoRepository.findByUsername(username);
+    }
+
+    public void changePassword(ChangePasswordRequest request) {
+        var user = userInfoRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userInfoRepository.save(user);
     }
 }
