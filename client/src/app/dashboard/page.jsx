@@ -1,41 +1,43 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import ProtectedRoute from "@/components/ProtectedRoute"
-import apiService from '@/app/service/apiService'
+import {useEffect, useState} from 'react'
+import {useRouter} from 'next/navigation'
+import ProtectedRoute from "@/components/ProtectedRoute";
+
+// Mock data for dashboard stats
+const stats = [
+    {name: 'Total Lessons', value: '12'},
+    {name: 'Completed', value: '8'},
+    {name: 'In Progress', value: '3'},
+    {name: 'Badges', value: '2'}
+]
+
+// Mock data for recent activity
+const recentActivity = [
+    {
+        id: 1,
+        title: 'Completed Web Development Basics',
+        date: '2024-03-15',
+        type: 'lesson'
+    },
+    {
+        id: 2,
+        title: 'Earned JavaScript Fundamentals Badge',
+        date: '2024-03-10',
+        type: 'badge'
+    },
+    {
+        id: 3,
+        title: 'Started React Hooks Course',
+        date: '2024-03-08',
+        type: 'lesson'
+    }
+]
 
 export default function DashboardPage() {
     const router = useRouter()
     const [user, setUser] = useState(null)
-    const [stats, setStats] = useState([
-        { name: 'Total Lessons', value: '-' },
-        { name: 'Completed', value: '-' },
-        { name: 'In Progress', value: '-' },
-        { name: 'Badges', value: '-' }
-    ])
-
-    const recentActivity = [
-        {
-            id: 1,
-            title: 'Completed Web Development Basics',
-            date: '2024-03-15',
-            type: 'lesson'
-        },
-        {
-            id: 2,
-            title: 'Earned JavaScript Fundamentals Badge',
-            date: '2024-03-10',
-            type: 'badge'
-        },
-        {
-            id: 3,
-            title: 'Started React Hooks Course',
-            date: '2024-03-08',
-            type: 'lesson'
-        }
-    ]
 
     useEffect(() => {
         const userData = localStorage.getItem('user')
@@ -46,30 +48,9 @@ export default function DashboardPage() {
         }
     }, [router])
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const lessonStats = await apiService.get('api/lesson-progress/stats')
-                const total = lessonStats.totalLessons
-                const completed = lessonStats.completedLessons
-                const inProgress = lessonStats.inProgressLessons
-                const badges = 0 // TODO: replace with real badge logic
-
-                setStats([
-                    { name: 'Total Lessons', value: total },
-                    { name: 'Completed', value: completed },
-                    { name: 'In Progress', value: inProgress },
-                    { name: 'Badges', value: badges }
-                ])
-            } catch (err) {
-                console.error('Failed to fetch stats:', err)
-            }
-        }
-
-        fetchStats()
-    }, [])
-
-    if (!user) return null
+    if (!user) {
+        return null
+    }
 
     return (
         <ProtectedRoute>
@@ -164,6 +145,6 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
-        </ProtectedRoute>
+</ProtectedRoute>
     )
 }
