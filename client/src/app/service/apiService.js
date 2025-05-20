@@ -224,6 +224,19 @@ const apiService = {
     isAuthenticated() {
       return !!localStorage.getItem('authToken');
     }
+  },
+  activity: {
+    /**
+     * Get all activities for a given user ID
+     * @param {number} userId - The ID of the user
+     * @returns {Promise<Array>} - List of activities
+     */
+    async getActivitiesByUserId(userId) {
+      if (!userId) {
+        throw new Error('User ID is required to fetch activities.');
+      }
+      return apiService.get(`api/activity/${userId}/user`);
+    }
   }
 };
 
