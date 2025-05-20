@@ -17,6 +17,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     @Query("""
             SELECT a FROM Activity a
             WHERE a.user.id = :userId
+            ORDER BY a.createdAt DESC
             """)
     List<Activity> findAllActivitiesByUserId(@Param("userId") Long userId);
 }
