@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class LessonProgressService {
 
@@ -43,6 +45,10 @@ public class LessonProgressService {
         return lessonProgressRepository.save(progress);
     }
 
+    public long getInProgressLessonsCount(UserInfo user) {
+        return lessonProgressRepository.countByUserAndCompletedFalse(user);
+    }
+
     public boolean isLessonCompleted(UserInfo user, Lesson lesson) {
         return lessonProgressRepository.findByUserAndLesson(user, lesson)
                 .map(LessonProgress::isCompleted)
@@ -53,5 +59,10 @@ public class LessonProgressService {
         return lessonProgressRepository.findByUserAndLesson(user, lesson)
                 .map(LessonProgress::getLastCompletedParagraphIndex)
                 .orElse(-1);
+    }
+
+
+    public long getCompletedLessonsCount(UserInfo user) {
+        return lessonProgressRepository.countByUserAndCompletedTrue(user);
     }
 } 
