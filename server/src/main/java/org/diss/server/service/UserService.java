@@ -43,6 +43,10 @@ public class UserService {
      * @return
      */
     public void addUser(RegisterRequest request) {
+        if (userInfoRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use.");
+        }
+
         var userRole = roleRepository.findByName("ROLE_USER")
                 // todo - better exception handling
                 .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
