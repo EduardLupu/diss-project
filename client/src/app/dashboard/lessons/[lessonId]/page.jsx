@@ -198,6 +198,9 @@ export default function LessonPage({params}) {
         // Reset current question index
         setCurrentQuestionIndex(0)
 
+        // Mark last step as completed
+         markCurrentStepComplete()
+
         // Switch to quiz mode
         setQuizMode(true)
 
