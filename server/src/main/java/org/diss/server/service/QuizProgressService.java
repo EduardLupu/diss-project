@@ -42,14 +42,15 @@ public class QuizProgressService {
             existingProgress.setAttempts(existingProgress.getAttempts() + 1);
             QuizProgress savedProgress = quizProgressRepository.save(existingProgress);
 
-            Activity activity = Activity.builder()
-                    .type("lesson_finished")
-                    .name(lesson.getTitle())
-                    .user(user)
-                    .build();
+            if(request.getScore() == 100) {
+                Activity activity = Activity.builder()
+                        .type("lesson_finished")
+                        .name(lesson.getTitle())
+                        .user(user)
+                        .build();
 
-            activityRepository.save(activity);
-
+                activityRepository.save(activity);
+            }
             return convertToDTO(savedProgress);
         } else {
             return convertToDTO(existingProgress);
