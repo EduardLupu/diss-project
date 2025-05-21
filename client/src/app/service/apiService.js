@@ -1,6 +1,6 @@
 // apiService.js
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'https://api.eduwave.eduardlupu.com';
 
 /**
  * API service for handling requests to the backend
@@ -253,7 +253,7 @@ const apiService = {
  */
 export async function getProfilePicture(pictureName) {
   try {
-    const response = await fetch(`http://localhost:8080/api/user/getProfilePicture/${pictureName}`);
+    const response = await fetch(`${API_BASE_URL}/api/user/getProfilePicture/${pictureName}`);
     console.log(response)
     if (!response.ok) {
       console.error("Failed to fetch profile picture.");
@@ -298,7 +298,7 @@ export async function updateProfilePicture(picture) {
 
 export async function uploadProfilePicture(formData) {
   try {
-    const response = await fetch('http://localhost:8080/api/user/upload-profile-picture', {
+    const response = await fetch(`${API_BASE_URL}/api/user/upload-profile-picture`, {
       method: 'POST',
       body: formData,
       headers: {

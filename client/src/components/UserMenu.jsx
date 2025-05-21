@@ -11,13 +11,14 @@ export default function UserMenu({ userName }) {
   const [pictureUrl, setPictureUrl] = useState('/avatars/avatar1.png')
   const menuRef = useRef(null)
   const router = useRouter()
+  const API_BASE_URL = 'https://api.eduwave.eduardlupu.com';
 
   useEffect(() => {
     async function fetchPicture() {
       await refreshProfilePicture()
       const newPicture = localStorage.getItem('picture')
       if (newPicture) {
-        setPictureUrl(`http://localhost:8080/api/user/getProfilePicture/${newPicture}`)
+        setPictureUrl(`${API_BASE_URL}/api/user/getProfilePicture/${newPicture}`);
       }
     }
 
