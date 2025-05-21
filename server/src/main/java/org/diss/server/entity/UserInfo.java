@@ -33,6 +33,8 @@ public class UserInfo implements UserDetails, Principal {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
     private boolean enabled;
+    @Builder.Default
+    private String profilePicture = "avatar1.png";
 
     @Override
     public String getName() {

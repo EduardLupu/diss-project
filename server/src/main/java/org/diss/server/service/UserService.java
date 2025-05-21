@@ -103,4 +103,25 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userInfoRepository.save(user);
     }
+
+    public boolean changeProfilePicture(String tokenHeader, String profilePictureName) {
+        String token = tokenHeader.replace("Bearer ", "").trim();
+        String username = jwtService.extractUsername(token);
+
+        Optional<UserInfo> userOptional = userInfoRepository.findByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            return false;
+        }
+        UserInfo user = userOptional.get();
+        if(profilePictureName.contains(":")) {
+            user.setProfilePicture(profilePictureName.split(":")[1].replace("}", ""));
+        }
+        else{
+            user.setProfilePicture(profilePictureName);
+        }
+        userInfoRepository.save(user);
+        return true;
+    }
+
 }

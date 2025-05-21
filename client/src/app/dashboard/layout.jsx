@@ -75,7 +75,9 @@ export default function DashboardLayout({ children }) {
               </div>
             </div>
             <div className="flex items-center">
-              <UserMenu userName={user.name} />
+              <UserMenu
+              userName={user.name}
+              />
             </div>
           </div>
         </div>
