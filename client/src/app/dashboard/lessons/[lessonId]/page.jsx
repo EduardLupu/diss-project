@@ -6,6 +6,7 @@ import ReflectionBox from '@/components/ReflectionBox'
 import QuizCard from '@/components/QuizCard'
 import apiService from '@/app/service/apiService'
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { jwtDecode } from "jwt-decode";
 
 export default function LessonPage({params}) {
     const [lesson, setLesson] = useState(null)
@@ -19,6 +20,7 @@ export default function LessonPage({params}) {
     const [error, setError] = useState(null)
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [submittingQuiz, setSubmittingQuiz] = useState(false)
+    const [showWrongAnswers, setShowWrongAnswers] = useState(false)
 
     // Calculate if all content steps are completed
     const allStepsCompleted = lesson &&
@@ -66,11 +68,11 @@ export default function LessonPage({params}) {
                     }
 
                     // Load quiz result if available
-                    const savedQuizData = localStorage.getItem(`quiz-${params.lessonId}`)
-                    if (savedQuizData) {
-                        const quizData = JSON.parse(savedQuizData)
-                        setQuizResult(quizData)
-                    }
+                    // const savedQuizData = localStorage.getItem(`quiz-${params.lessonId}`)
+                    // if (savedQuizData) {
+                    //     const quizData = JSON.parse(savedQuizData)
+                    //     setQuizResult(quizData)
+                    // }
                 }
 
                 const completedSteps = await apiService.get(`/api/lesson-progress/${params.lessonId}/status`)
@@ -109,13 +111,13 @@ export default function LessonPage({params}) {
     }
 
     const saveProgress = () => {
-        localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-            step: currentStep,
-            completedSteps,
-            quizMode,
-            answers: quizAnswers,
-            currentQuestionIndex
-        }))
+        // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+        //     step: currentStep,
+        //     completedSteps,
+        //     quizMode,
+        //     answers: quizAnswers,
+        //     currentQuestionIndex
+        // }))
     }
 
     const markCurrentStepComplete = async () => {
@@ -127,13 +129,13 @@ export default function LessonPage({params}) {
             await apiService.post(`/api/lesson-progress/${params.lessonId}/complete-paragraph/${currentStep}`)
 
             // Save updated progress
-            localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-                step: currentStep,
-                completedSteps: newCompletedSteps,
-                quizMode,
-                answers: quizAnswers,
-                currentQuestionIndex
-            }))
+            // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+            //     step: currentStep,
+            //     completedSteps: newCompletedSteps,
+            //     quizMode,
+            //     answers: quizAnswers,
+            //     currentQuestionIndex
+            // }))
         }
     }
 
@@ -157,13 +159,13 @@ export default function LessonPage({params}) {
                 const newStep = prevStep + 1
 
                 // Save progress with new step
-                localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-                    step: newStep,
-                    completedSteps: [...new Set([...completedSteps, prevStep])],
-                    quizMode,
-                    answers: quizAnswers,
-                    currentQuestionIndex
-                }))
+                // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+                //     step: newStep,
+                //     completedSteps: [...new Set([...completedSteps, prevStep])],
+                //     quizMode,
+                //     answers: quizAnswers,
+                //     currentQuestionIndex
+                // }))
 
                 return newStep
             })
@@ -176,13 +178,13 @@ export default function LessonPage({params}) {
                 const newStep = prevStep - 1
 
                 // Save progress with new step
-                localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-                    step: newStep,
-                    completedSteps,
-                    quizMode,
-                    answers: quizAnswers,
-                    currentQuestionIndex
-                }))
+                // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+                //     step: newStep,
+                //     completedSteps,
+                //     quizMode,
+                //     answers: quizAnswers,
+                //     currentQuestionIndex
+                // }))
 
                 return newStep
             })
@@ -205,13 +207,13 @@ export default function LessonPage({params}) {
         setQuizMode(true)
 
         // Save the updated state
-        localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-            step: currentStep,
-            completedSteps,
-            quizMode: true,
-            answers: quizAnswers,
-            currentQuestionIndex: 0
-        }))
+        // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+        //     step: currentStep,
+        //     completedSteps,
+        //     quizMode: true,
+        //     answers: quizAnswers,
+        //     currentQuestionIndex: 0
+        // }))
     }
 
     const handleQuizAnswer = (questionId, answerIndex) => {
@@ -219,13 +221,13 @@ export default function LessonPage({params}) {
             const newAnswers = {...prev, [questionId]: answerIndex}
 
             // Save progress with new answers
-            localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-                step: currentStep,
-                completedSteps,
-                quizMode,
-                answers: newAnswers,
-                currentQuestionIndex
-            }))
+            // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+            //     step: currentStep,
+            //     completedSteps,
+            //     quizMode,
+            //     answers: newAnswers,
+            //     currentQuestionIndex
+            // }))
 
             return newAnswers
         })
@@ -266,7 +268,18 @@ export default function LessonPage({params}) {
                 setQuizResult(result)
 
                 // Save quiz result
-                localStorage.setItem(`quiz-${params.lessonId}`, JSON.stringify(result))
+                // localStorage.setItem(`quiz-${params.lessonId}`, JSON.stringify(result))
+
+                // Save quiz progress
+                const token = localStorage.getItem('authToken')
+                const decodedToken = jwtDecode(token)
+                const userId = decodedToken.userId
+
+                await apiService.post('api/quiz-progress', {
+                    userId: userId,
+                    lessonId: parseInt(params.lessonId),
+                    score: Math.round(result.percentage)
+                })
             } else {
                 // Fallback if no result
                 setQuizResult({
@@ -289,15 +302,16 @@ export default function LessonPage({params}) {
         setQuizAnswers({})
         setQuizResult(null)
         setCurrentQuestionIndex(0)
+        setShowWrongAnswers(false)
 
         // Update local storage
-        localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-            step: currentStep,
-            completedSteps,
-            quizMode,
-            answers: {},
-            currentQuestionIndex: 0
-        }))
+        // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+        //     step: currentStep,
+        //     completedSteps,
+        //     quizMode,
+        //     answers: {},
+        //     currentQuestionIndex: 0
+        // }))
 
         localStorage.removeItem(`quiz-${params.lessonId}`)
     }
@@ -314,13 +328,13 @@ export default function LessonPage({params}) {
         setQuizMode(false)
 
         // Save updated state
-        localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-            step: currentStep,
-            completedSteps,
-            quizMode: false,
-            answers: quizAnswers,
-            currentQuestionIndex
-        }))
+        // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+        //     step: currentStep,
+        //     completedSteps,
+        //     quizMode: false,
+        //     answers: quizAnswers,
+        //     currentQuestionIndex
+        // }))
     }
 
     const handleNextQuestion = () => {
@@ -329,13 +343,13 @@ export default function LessonPage({params}) {
                 const newIndex = prevIndex + 1
 
                 // Save progress with new question index
-                localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-                    step: currentStep,
-                    completedSteps,
-                    quizMode,
-                    answers: quizAnswers,
-                    currentQuestionIndex: newIndex
-                }))
+                // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+                //     step: currentStep,
+                //     completedSteps,
+                //     quizMode,
+                //     answers: quizAnswers,
+                //     currentQuestionIndex: newIndex
+                // }))
 
                 return newIndex
             })
@@ -348,13 +362,13 @@ export default function LessonPage({params}) {
                 const newIndex = prevIndex - 1
 
                 // Save progress with new question index
-                localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
-                    step: currentStep,
-                    completedSteps,
-                    quizMode,
-                    answers: quizAnswers,
-                    currentQuestionIndex: newIndex
-                }))
+                // localStorage.setItem(`lesson-${params.lessonId}`, JSON.stringify({
+                //     step: currentStep,
+                //     completedSteps,
+                //     quizMode,
+                //     answers: quizAnswers,
+                //     currentQuestionIndex: newIndex
+                // }))
 
                 return newIndex
             })
@@ -518,9 +532,43 @@ export default function LessonPage({params}) {
                                             </div>
                                         </div>
 
+                                        {/* Wrong Answers Section */}
+                                        {quizResult.wrongAnswers && quizResult.wrongAnswers.length > 0 && (
+                                            <div className="mt-8 text-left">
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <h4 className="text-lg font-semibold">Questions to Review</h4>
+                                                    <button
+                                                        onClick={() => setShowWrongAnswers(!showWrongAnswers)}
+                                                        className="text-teal-500 hover:text-teal-600 text-sm font-medium"
+                                                    >
+                                                        {showWrongAnswers ? 'Hide Answers' : 'Show Answers'}
+                                                    </button>
+                                                </div>
+                                                {showWrongAnswers && (
+                                                    <div className="space-y-4">
+                                                        {quizResult.wrongAnswers.map((wrongAnswer, index) => (
+                                                            <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
+                                                                <p className="font-medium text-gray-800 mb-2">{wrongAnswer.question}</p>
+                                                                <div className="space-y-2">
+                                                                    <p className="text-sm">
+                                                                        <span className="text-red-500">Your answer: </span>
+                                                                        {wrongAnswer.wrongAnswer}
+                                                                    </p>
+                                                                    <p className="text-sm">
+                                                                        <span className="text-green-500">Correct answer: </span>
+                                                                        {wrongAnswer.correctAnswer}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
                                         <button
                                             onClick={handleRetakeQuiz}
-                                            className="bg-teal-400 text-white py-2 px-6 rounded-lg hover:bg-teal-500 transition-colors"
+                                            className="bg-teal-400 text-white py-2 px-6 rounded-lg hover:bg-teal-500 transition-colors mt-8"
                                         >
                                             Retake Quiz
                                         </button>

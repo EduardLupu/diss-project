@@ -31,14 +31,18 @@ public class QuizProgressService {
                 .findByUserIdAndLessonId(request.getUserId(), request.getLessonId())
                 .orElse(new QuizProgress());
 
-        existingProgress.setUser(user);
-        existingProgress.setLesson(lesson);
-        existingProgress.setScore(request.getScore());
-        existingProgress.setCompleted(request.getScore() == 100);
-        existingProgress.setAttempts(existingProgress.getAttempts() + 1);
+        if(!existingProgress.isCompleted()) {
+            existingProgress.setUser(user);
+            existingProgress.setLesson(lesson);
+            existingProgress.setScore(request.getScore());
+            existingProgress.setCompleted(request.getScore() == 100);
+            existingProgress.setAttempts(existingProgress.getAttempts() + 1);
 
-        QuizProgress savedProgress = quizProgressRepository.save(existingProgress);
-        return convertToDTO(savedProgress);
+            QuizProgress savedProgress = quizProgressRepository.save(existingProgress);
+            return convertToDTO(savedProgress);
+        } else {
+            return convertToDTO(existingProgress);
+        }
     }
 
     public List<QuizProgressDTO> getUserProgress(Long userId) {
