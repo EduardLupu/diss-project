@@ -1,6 +1,7 @@
 package org.diss.server.service;
 
 import org.diss.server.dto.QuizResponseDTO;
+import org.diss.server.dto.WrongAnswers;
 import org.diss.server.entity.Lesson;
 import org.diss.server.entity.Question;
 import org.diss.server.repository.LessonRepository;
@@ -8,6 +9,7 @@ import org.diss.server.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,7 @@ public class QuizService {
 
         int totalQuestions = questions.size();
         int correctAnswers = 0;
+        List<WrongAnswers> wrongAnswers = new ArrayList<>();
 
         // Evaluate each question
         for (Question question : questions) {
@@ -57,6 +60,11 @@ public class QuizService {
             String correctOption = question.getCorrectAnswer();
             if (userAnswer.equals(correctOption)) {
                 correctAnswers++;
+            } else {
+                wrongAnswers.add(new WrongAnswers(question.getQuestion(),
+                        "(" + userAnswer + ") " + questionRepository.getOptionText(question.getId(), userAnswer),
+                        "(" + correctOption + ") " + questionRepository.getOptionText(question.getId(), correctOption)
+                ));
             }
         }
 
@@ -68,7 +76,8 @@ public class QuizService {
             passed,
             correctAnswers,
             totalQuestions,
-            percentage
+            percentage,
+            wrongAnswers
         );
     }
 
@@ -76,6 +85,7 @@ public class QuizService {
         boolean passed,
         int correctAnswers,
         int totalQuestions,
-        double percentage
+        double percentage,
+        List<WrongAnswers> wrongAnswers
     ) {}
 } 

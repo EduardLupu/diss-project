@@ -200,6 +200,7 @@ const apiService = {
     logout() {
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
+      localStorage.clear();
       // You can add a server call here if needed to invalidate the token
     },
 
