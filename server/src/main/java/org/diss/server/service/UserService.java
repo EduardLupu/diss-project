@@ -5,7 +5,9 @@ import org.diss.server.dto.AuthRequest;
 import org.diss.server.dto.AuthenticationResponse;
 import org.diss.server.dto.ChangePasswordRequest;
 import org.diss.server.dto.RegisterRequest;
+import org.diss.server.entity.Activity;
 import org.diss.server.entity.UserInfo;
+import org.diss.server.repository.ActivityRepository;
 import org.diss.server.repository.RoleRepository;
 import org.diss.server.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -25,6 +29,8 @@ import java.util.*;
 public class UserService {
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    private ActivityRepository activityRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -43,11 +49,15 @@ public class UserService {
      * @return
      */
     public void addUser(RegisterRequest request) {
+        if (userInfoRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use.");
+        }
+
         var userRole = roleRepository.findByName("ROLE_USER")
                 // todo - better exception handling
                 .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
 
-        var user = UserInfo.builder()
+        UserInfo user = UserInfo.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .username(request.getUsername())
@@ -56,7 +66,16 @@ public class UserService {
                 .enabled(true)
                 .roles(List.of(userRole))
                         .build();
+
         userInfoRepository.save(user);
+
+        Activity activity = Activity.builder()
+                .type("register")
+                .name("Registration success")
+                .user(user)
+                .build();
+
+        activityRepository.save(activity);
     }
 
     public AuthenticationResponse authenticate(AuthRequest authRequest) {

@@ -1,19 +1,26 @@
 package org.diss.server.service;
 
+import org.diss.server.entity.Activity;
 import org.diss.server.entity.Lesson;
 import org.diss.server.entity.LessonProgress;
 import org.diss.server.entity.UserInfo;
+import org.diss.server.repository.ActivityRepository;
 import org.diss.server.repository.LessonProgressRepository;
 import org.diss.server.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class LessonProgressService {
 
     @Autowired
     private LessonProgressRepository lessonProgressRepository;
+
+    @Autowired
+    private ActivityRepository activityRepository;
 
     @Autowired
     private LessonRepository lessonRepository;
@@ -39,8 +46,22 @@ public class LessonProgressService {
         }
 
         LessonProgress progress = getOrCreateProgress(user, lesson);
+
+        if (paragraphIndex == 0) {
+            Activity activity = Activity.builder()
+                    .type("lesson_start")
+                    .name(lesson.getTitle())
+                    .user(user)
+                    .build();
+            activityRepository.save(activity);
+        }
+
         progress.markParagraphAsCompleted(paragraphIndex);
         return lessonProgressRepository.save(progress);
+    }
+
+    public long getInProgressLessonsCount(UserInfo user) {
+        return lessonProgressRepository.countByUserAndCompletedFalse(user);
     }
 
     public boolean isLessonCompleted(UserInfo user, Lesson lesson) {
@@ -53,5 +74,10 @@ public class LessonProgressService {
         return lessonProgressRepository.findByUserAndLesson(user, lesson)
                 .map(LessonProgress::getLastCompletedParagraphIndex)
                 .orElse(-1);
+    }
+
+
+    public long getCompletedLessonsCount(UserInfo user) {
+        return lessonProgressRepository.countByUserAndCompletedTrue(user);
     }
 } 
