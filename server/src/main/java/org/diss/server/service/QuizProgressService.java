@@ -3,9 +3,11 @@ package org.diss.server.service;
 import lombok.RequiredArgsConstructor;
 import org.diss.server.dto.QuizProgressDTO;
 import org.diss.server.dto.QuizProgressRequest;
+import org.diss.server.entity.Activity;
 import org.diss.server.entity.Lesson;
 import org.diss.server.entity.QuizProgress;
 import org.diss.server.entity.UserInfo;
+import org.diss.server.repository.ActivityRepository;
 import org.diss.server.repository.LessonRepository;
 import org.diss.server.repository.QuizProgressRepository;
 import org.diss.server.repository.UserInfoRepository;
@@ -20,6 +22,7 @@ public class QuizProgressService {
     private final QuizProgressRepository quizProgressRepository;
     private final UserInfoRepository userRepository;
     private final LessonRepository lessonRepository;
+    private final ActivityRepository activityRepository;
 
     public QuizProgressDTO saveProgress(QuizProgressRequest request) {
         UserInfo user = userRepository.findById(request.getUserId())
@@ -37,8 +40,16 @@ public class QuizProgressService {
             existingProgress.setScore(request.getScore());
             existingProgress.setCompleted(request.getScore() == 100);
             existingProgress.setAttempts(existingProgress.getAttempts() + 1);
-
             QuizProgress savedProgress = quizProgressRepository.save(existingProgress);
+
+            Activity activity = Activity.builder()
+                    .type("lesson_finished")
+                    .name(lesson.getTitle())
+                    .user(user)
+                    .build();
+
+            activityRepository.save(activity);
+
             return convertToDTO(savedProgress);
         } else {
             return convertToDTO(existingProgress);

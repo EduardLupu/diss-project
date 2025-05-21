@@ -87,6 +87,22 @@ export default function DashboardPage() {
                 </svg>
             )
         }
+        if (type === 'lesson_finished') {
+            return (
+                <svg className="h-5 w-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            )
+        }
+        if (type === 'lesson_finished') {
+            return (
+                <svg className="h-5 w-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M8 21h8m-4-4v4m0-4a5 5 0 005-5V5H7v7a5 5 0 005 5zm5-10h2a2 2 0 012 2v1a4 4 0 01-4-4zM4 7h2a4 4 0 01-4 4V9a2 2 0 012-2z" />
+                </svg>
+            )
+        }
         return null
     }
 
@@ -153,9 +169,11 @@ export default function DashboardPage() {
                                                 <p className="text-lg font-semibold text-gray-900">
                                                     {activity.type === 'lesson_start'
                                                         ? `Started the course ${activity.name}`
-                                                        : activity.type === 'register'
-                                                            ? 'Successfully registered an account!!'
-                                                            : activity.name}
+                                                        : activity.type === 'lesson_finished'
+                                                            ? `Finished the course ${activity.name}`
+                                                            : activity.type === 'register'
+                                                                ? 'Successfully registered an account!!'
+                                                                : activity.name}
                                                 </p>
                                                 <p className="text-sm text-gray-500">
                                                     {new Date(activity.createdAt).toLocaleDateString()}
