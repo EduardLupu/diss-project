@@ -20,6 +20,15 @@ const nextConfig = {
       },
     ];
   },
-}
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.eduwave.eduardlupu.com',
+        pathname: '/api/user/getProfilePicture/**',
+      },
+    ],
+  },
+};
 
-module.exports = nextConfig 
+module.exports = nextConfig;

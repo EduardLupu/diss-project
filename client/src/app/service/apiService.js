@@ -165,14 +165,17 @@ const apiService = {
         }
 
         const user = await apiService.get(`/api/user/getUserInfoByToken`);
-
+        console.log('Fetched user data:', user);
+        console.log(user.profilePicture)
         // Store user data
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('picture', user.profilePicture);
         } else {
           throw new Error('Something went wrong. Please try again.');
         }
-        
+
+
         return loginResponse;
       } catch (error) {
         console.error('Login error:', error);
@@ -240,5 +243,86 @@ const apiService = {
     }
   }
 };
+
+/**
+ * Fetches the profile picture by name and returns it as a Base64 data URL.
+ * Also stores it in localStorage.
+ * 
+ * @param {string} pictureName - The filename (e.g., "avatar5.png")
+ * @returns {Promise<string|null>} Base64 image data URL or null on failure
+ */
+export async function getProfilePicture(pictureName) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/user/getProfilePicture/${pictureName}`);
+    console.log(response)
+    if (!response.ok) {
+      console.error("Failed to fetch profile picture.");
+      return null;
+    }
+
+    const blob = await response.blob();
+    const reader = new FileReader();
+
+    return new Promise((resolve) => {
+      reader.onloadend = () => {
+        const base64DataUrl = reader.result;
+        localStorage.setItem('profilePicture', base64DataUrl);
+        resolve(base64DataUrl);
+      };
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error("Error fetching profile picture:", error);
+    return null;
+  }
+}
+
+export async function refreshProfilePicture() {
+  try {
+    const user = await apiService.get(`/api/user/getUserInfoByToken`);
+    if (user && user.profilePicture) {
+      localStorage.setItem('picture', user.profilePicture);
+      console.log('Profile picture updated:', user.profilePicture);
+    }
+  } catch (err) {
+    console.error('Failed to refresh profile picture:', err);
+  }
+}
+
+export async function updateProfilePicture(picture) {
+
+  const res = await apiService.post('/api/user/change-profile-picture', { picture });
+  refreshProfilePicture();
+  return res;
+}
+
+export async function uploadProfilePicture(formData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/user/upload-profile-picture`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}` 
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload profile picture');
+    }
+
+    // Optional: fetch updated user info or just return response
+    const user = await apiService.get('/api/user/getUserInfoByToken');
+    if (user?.profilePicture) {
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('picture', user.profilePicture);
+    }
+
+    return user;
+  } catch (error) {
+    console.error('Upload failed:', error);
+    throw error;
+  }
+}
+
 
 export default apiService;
