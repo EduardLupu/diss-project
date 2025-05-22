@@ -27,6 +27,7 @@ export default function UserMenu({ userName }) {
 
   const handleLogout = () => {
     localStorage.removeItem('user')
+    localStorage.clear()
     router.push('/')
   }
 

@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e) => {
+    localStorage.clear()
     e.preventDefault()
     
     if (!email || !password) {
