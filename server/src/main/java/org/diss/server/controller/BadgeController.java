@@ -50,6 +50,29 @@ public class BadgeController {
 
         return ResponseEntity.ok(badgeDTOs);
     }
+
+    @GetMapping("/user/{userId}/earned")
+    public ResponseEntity<?> getAllEarnedBadgesByUserId(@PathVariable Long userId) {
+        // Get all earned badges by this user
+        List<EarnedBadge> earnedBadges = badgeService.getEarnedBadgesByUser(userId);
+
+        // Filter only earned badges and convert to DTOs
+        List<BadgeDTO> earnedBadgeDTOs = earnedBadges.stream()
+                .filter(EarnedBadge::isEarned)
+                .map(earnedBadge -> {
+                    Badge badge = earnedBadge.getBadge();
+                    return new BadgeDTO(
+                            badge.getId(),
+                            badge.getImage(),
+                            badge.getTitle(),
+                            badge.getDescription(),
+                            true  // Since we filtered for earned badges, this will always be true
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(earnedBadgeDTOs);
+    }
 }
 
 

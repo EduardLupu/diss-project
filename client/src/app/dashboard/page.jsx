@@ -49,17 +49,25 @@ export default function DashboardPage() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const lessonStats = await apiService.get('api/lesson-progress/stats')
+                const token = localStorage.getItem('authToken')
+                const decodedToken = jwtDecode(token)
+                const userId = decodedToken.userId
+
+                const [lessonStats, badges] = await Promise.all([
+                    apiService.get('api/lesson-progress/stats'),
+                    apiService.get(`api/badge/user/${userId}/earned`)
+                ])
+
                 const total = lessonStats.totalLessons
                 const completed = lessonStats.completedLessons
                 const inProgress = lessonStats.inProgressLessons
-                const badges = 0 // TODO: replace with real badge logic
+                const badgeCount = badges.length
 
                 setStats([
                     { name: 'Total Lessons', value: total },
                     { name: 'Completed', value: completed },
                     { name: 'In Progress', value: inProgress },
-                    { name: 'Badges', value: badges }
+                    { name: 'Badges', value: badgeCount }
                 ])
             } catch (err) {
                 console.error('Failed to fetch stats:', err)
