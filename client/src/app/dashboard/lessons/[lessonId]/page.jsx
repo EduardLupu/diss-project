@@ -261,7 +261,7 @@ export default function LessonPage({params}) {
             const lessonId = parseInt(params.lessonId);
 
             // 🔍 1. Fetch previous progress
-            const progressRes = await apiService.get(`api/user/${userId}`);
+            const progressRes = await apiService.get(`api/quiz-progress/user/${userId}`);
             const progressList = progressRes || [];
             const lessonProgress = progressList.find(p => p.lessonId === lessonId);
             const alreadyScored100 = lessonProgress?.score === 100;
