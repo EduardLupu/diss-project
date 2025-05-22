@@ -8,7 +8,7 @@ import { refreshProfilePicture } from '@/app/service/apiService'
 
 export default function UserMenu({ userName }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [pictureUrl, setPictureUrl] = useState('/avatars/avatar1.png')
+  const [pictureUrl, setPictureUrl] = useState('/avatars/avatar11.png')
   const menuRef = useRef(null)
   const router = useRouter()
   const API_BASE_URL = 'https://api.eduwave.eduardlupu.com';
