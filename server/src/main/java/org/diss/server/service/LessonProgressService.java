@@ -1,12 +1,7 @@
 package org.diss.server.service;
 
-import org.diss.server.entity.Activity;
-import org.diss.server.entity.Lesson;
-import org.diss.server.entity.LessonProgress;
-import org.diss.server.entity.UserInfo;
-import org.diss.server.repository.ActivityRepository;
-import org.diss.server.repository.LessonProgressRepository;
-import org.diss.server.repository.LessonRepository;
+import org.diss.server.entity.*;
+import org.diss.server.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +19,12 @@ public class LessonProgressService {
 
     @Autowired
     private LessonRepository lessonRepository;
+
+    @Autowired
+    private BadgeRepository badgeRepository;
+
+    @Autowired
+    private EarnedBadgeRepository earnedBadgeRepository;
 
     @Transactional
     public LessonProgress getOrCreateProgress(UserInfo user, Lesson lesson) {
@@ -57,7 +58,27 @@ public class LessonProgressService {
         }
 
         progress.markParagraphAsCompleted(paragraphIndex);
-        return lessonProgressRepository.save(progress);
+        LessonProgress savedProgress = lessonProgressRepository.save(progress);
+
+        // If lesson is now completed, update related badges
+        if (savedProgress.isCompleted()) {
+            List<Badge> badges = badgeRepository.findByLessonId(lessonId);
+
+            for (Badge badge : badges) {
+                // Avoid duplicate earned badges
+                boolean alreadyEarned = earnedBadgeRepository.existsByUserIdAndBadgeId(user.getId(), badge.getId());
+                if (!alreadyEarned) {
+                    EarnedBadge earnedBadge = EarnedBadge.builder()
+                            .badge(badge)
+                            .user(user)
+                            .isEarned(true)
+                            .build();
+                    earnedBadgeRepository.save(earnedBadge);
+                }
+            }
+        }
+
+        return savedProgress;
     }
 
     public long getInProgressLessonsCount(UserInfo user) {
