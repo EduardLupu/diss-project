@@ -235,77 +235,68 @@ export default function LessonPage({params}) {
 
     const handleSubmitQuiz = async () => {
         try {
-            setSubmittingQuiz(true);
+            setSubmittingQuiz(true)
 
             function getAnswer(selectedAnswer) {
                 switch (selectedAnswer) {
                     case 0:
-                        return 'A';
+                        return 'A'
                     case 1:
-                        return 'B';
+                        return 'B'
                     case 2:
-                        return 'C';
+                        return 'C'
                     default:
-                        return null;
+                        return null
                 }
             }
 
+            // Format responses for API
             const responses = Object.entries(quizAnswers).map(([questionId, selectedAnswer]) => ({
                 questionId: parseInt(questionId),
                 selectedAnswer: getAnswer(selectedAnswer)
-            }));
+            }))
 
-            const token = localStorage.getItem('authToken');
-            const decodedToken = jwtDecode(token);
-            const userId = decodedToken.userId;
-            const lessonId = parseInt(params.lessonId);
-
-            // 🔍 1. Fetch previous progress
-            const progressRes = await apiService.get(`api/user/${userId}`);
-            const progressList = progressRes || [];
-            const lessonProgress = progressList.find(p => p.lessonId === lessonId);
-            const alreadyScored100 = lessonProgress?.score === 100;
-
-            // 🚀 2. Submit quiz
+            // Submit quiz to API
             const result = await apiService.post('api/quiz/submit', {
-                lessonId,
+                lessonId: parseInt(params.lessonId),
                 responses
-            });
+            })
 
+            // Store the complete quiz result
             if (result) {
-                setQuizResult(result);
+                // The response has format: {passed, correctAnswers, totalQuestions, percentage}
+                setQuizResult(result)
 
-                const score = Math.round(result.percentage);
+                // Save quiz result
+                // localStorage.setItem(`quiz-${params.lessonId}`, JSON.stringify(result))
 
-                // 📝 3. Save new progress
+                // Save quiz progress
+                const token = localStorage.getItem('authToken')
+                const decodedToken = jwtDecode(token)
+                const userId = decodedToken.userId
+
                 await apiService.post('api/quiz-progress', {
-                    userId,
-                    lessonId,
-                    score
-                });
-
-                // 🏅 4. Show badge toast if it's a new 100% achievement
-                if (score === 100 && !alreadyScored100) {
-                    toast.success('🎉 You earned a badge! Go check it out!');
-                }
-
+                    userId: userId,
+                    lessonId: parseInt(params.lessonId),
+                    score: Math.round(result.percentage)
+                })
             } else {
+                // Fallback if no result
                 setQuizResult({
                     passed: false,
                     correctAnswers: 0,
                     totalQuestions: questions.length,
                     percentage: 0
-                });
+                })
             }
 
         } catch (err) {
-            console.error('Error submitting quiz:', err);
-            setError('Failed to submit quiz. Please try again.');
+            console.error('Error submitting quiz:', err)
+            setError('Failed to submit quiz. Please try again.')
         } finally {
-            setSubmittingQuiz(false);
+            setSubmittingQuiz(false)
         }
-    };
-
+    }
 
     const handleRetakeQuiz = () => {
         setQuizAnswers({})

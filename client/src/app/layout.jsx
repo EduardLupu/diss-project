@@ -1,7 +1,5 @@
 import './globals.css'
-import AuthWrapper from '@/components/AuthWrapper'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import AuthWrapper from '@/components/AuthWrapper'  // adjust path if needed
 
 export const metadata = {
     title: 'EduWave - Educational Platform',
@@ -16,8 +14,6 @@ export default function RootLayout({ children }) {
             <main className="mx-auto">
                 {children}
             </main>
-            {/* ✅ Add ToastContainer once here */}
-            <ToastContainer position="top-right" autoClose={3000} />
         </AuthWrapper>
         </body>
         </html>
