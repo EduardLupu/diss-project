@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
                 {children}
             </main>
             {/* ✅ Add ToastContainer once here */}
-            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+            <ToastContainer position="bottom-center" autoClose={3000} hideProgressBar={false} />
         </AuthWrapper>
         </body>
         </html>
