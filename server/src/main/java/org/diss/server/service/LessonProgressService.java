@@ -20,6 +20,11 @@ public class LessonProgressService {
     @Autowired
     private LessonRepository lessonRepository;
 
+    @Autowired
+    private BadgeRepository badgeRepository;
+
+    @Autowired
+    private EarnedBadgeRepository earnedBadgeRepository;
 
     @Transactional
     public LessonProgress getOrCreateProgress(UserInfo user, Lesson lesson) {
@@ -53,8 +58,27 @@ public class LessonProgressService {
         }
 
         progress.markParagraphAsCompleted(paragraphIndex);
+        LessonProgress savedProgress = lessonProgressRepository.save(progress);
 
-        return lessonProgressRepository.save(progress);
+        // If lesson is now completed, update related badges
+        if (savedProgress.isCompleted()) {
+            List<Badge> badges = badgeRepository.findByLessonId(lessonId);
+
+            for (Badge badge : badges) {
+                // Avoid duplicate earned badges
+                boolean alreadyEarned = earnedBadgeRepository.existsByUserIdAndBadgeId(user.getId(), badge.getId());
+                if (!alreadyEarned) {
+                    EarnedBadge earnedBadge = EarnedBadge.builder()
+                            .badge(badge)
+                            .user(user)
+                            .isEarned(true)
+                            .build();
+                    earnedBadgeRepository.save(earnedBadge);
+                }
+            }
+        }
+
+        return savedProgress;
     }
 
     public long getInProgressLessonsCount(UserInfo user) {
