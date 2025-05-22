@@ -6,12 +6,12 @@ import { updateProfilePicture, uploadProfilePicture, getProfilePicture } from '@
 import { useRef } from 'react'
 
 const avatars = [
-  '/avatars/avatar1.png',
-  '/avatars/avatar2.png',
-  '/avatars/avatar3.png',
-  '/avatars/avatar4.png',
-  '/avatars/avatar5.png',
-  '/avatars/avatar6.png',
+  '/avatars/avatar11.png',
+  '/avatars/avatar22.png',
+  '/avatars/avatar33.png',
+  '/avatars/avatar44.png',
+  '/avatars/avatar55.png',
+  '/avatars/avatar66.png',
 ]
 
 export default function EditProfilePhotoPage() {
