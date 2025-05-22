@@ -7,6 +7,7 @@ import QuizCard from '@/components/QuizCard'
 import apiService from '@/app/service/apiService'
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { jwtDecode } from "jwt-decode";
+import {toast} from "react-toastify";
 
 export default function LessonPage({params}) {
     const [lesson, setLesson] = useState(null)
