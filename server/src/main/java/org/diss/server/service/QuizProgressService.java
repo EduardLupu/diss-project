@@ -3,14 +3,9 @@ package org.diss.server.service;
 import lombok.RequiredArgsConstructor;
 import org.diss.server.dto.QuizProgressDTO;
 import org.diss.server.dto.QuizProgressRequest;
-import org.diss.server.entity.Activity;
-import org.diss.server.entity.Lesson;
-import org.diss.server.entity.QuizProgress;
-import org.diss.server.entity.UserInfo;
-import org.diss.server.repository.ActivityRepository;
-import org.diss.server.repository.LessonRepository;
-import org.diss.server.repository.QuizProgressRepository;
-import org.diss.server.repository.UserInfoRepository;
+import org.diss.server.entity.*;
+import org.diss.server.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +18,12 @@ public class QuizProgressService {
     private final UserInfoRepository userRepository;
     private final LessonRepository lessonRepository;
     private final ActivityRepository activityRepository;
+
+    @Autowired
+    private BadgeRepository badgeRepository;
+
+    @Autowired
+    private EarnedBadgeRepository earnedBadgeRepository;
 
     public QuizProgressDTO saveProgress(QuizProgressRequest request) {
         UserInfo user = userRepository.findById(request.getUserId())
@@ -50,6 +51,21 @@ public class QuizProgressService {
                         .build();
 
                 activityRepository.save(activity);
+
+                List<Badge> badges = badgeRepository.findByLessonId(lesson.getId());
+
+                for (Badge badge : badges) {
+                    // Avoid duplicate earned badges
+                    boolean alreadyEarned = earnedBadgeRepository.existsByUserIdAndBadgeId(user.getId(), badge.getId());
+                    if (!alreadyEarned) {
+                        EarnedBadge earnedBadge = EarnedBadge.builder()
+                                .badge(badge)
+                                .user(user)
+                                .isEarned(true)
+                                .build();
+                        earnedBadgeRepository.save(earnedBadge);
+                    }
+                }
             }
             return convertToDTO(savedProgress);
         } else {
