@@ -11,7 +11,7 @@ const avatars = [
   '/avatars/avatar3.png',
   '/avatars/avatar4.png',
   '/avatars/avatar5.png',
-  'upload'
+  '/avatars/avatar6.png',
 ]
 
 export default function EditProfilePhotoPage() {
