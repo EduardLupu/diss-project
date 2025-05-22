@@ -3,26 +3,35 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
+import { refreshProfilePicture } from '@/app/service/apiService'
 
 export default function UserMenu({ userName }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [pictureUrl, setPictureUrl] = useState('/avatars/avatar1.png')
   const menuRef = useRef(null)
   const router = useRouter()
+  const API_BASE_URL = 'https://api.eduwave.eduardlupu.com';
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsOpen(false)
+    async function fetchPicture() {
+      await refreshProfilePicture()
+      const newPicture = localStorage.getItem('picture')
+      if (newPicture) {
+        setPictureUrl(`${API_BASE_URL}/api/user/getProfilePicture/${newPicture}`);
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    fetchPicture()
   }, [])
 
   const handleLogout = () => {
     localStorage.removeItem('user')
     router.push('/')
+  }
+
+  const handleEditProfilePhoto = () => {
+    router.push('/dashboard/edit-profile')
   }
 
   return (
@@ -33,11 +42,11 @@ export default function UserMenu({ userName }) {
       >
         <div className="relative w-8 h-8 rounded-full overflow-hidden bg-teal-100 flex items-center justify-center">
           <Image
-            src="/user_icon.svg"
+            src={pictureUrl}
             alt="User avatar"
-            width={24}
-            height={24}
-            className="text-teal-600"
+            width={34}
+            height={34}
+            className="object-cover"
           />
         </div>
         <span className="font-medium">{userName}</span>
@@ -59,8 +68,19 @@ export default function UserMenu({ userName }) {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
           <button
-            onClick={handleLogout}
+            onClick={handleEditProfilePhoto}
             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <Link
+              href="/dashboard/edit-profile-photo"
+              className="mx-auto block text-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+            >
+              Edit Profile Photo
+            </Link>
+          </button>
+          <button
+            onClick={handleLogout}
+            className=" mx-auto block text-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Logout
           </button>
@@ -68,4 +88,4 @@ export default function UserMenu({ userName }) {
       )}
     </div>
   )
-} 
+}
