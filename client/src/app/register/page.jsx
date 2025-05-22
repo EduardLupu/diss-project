@@ -27,6 +27,7 @@ export default function RegisterPage() {
   }
 
   const handleSubmit = async (e) => {
+    localStorage.clear()
     e.preventDefault()
     
     // Basic validation
