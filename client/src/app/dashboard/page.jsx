@@ -12,10 +12,10 @@ export default function DashboardPage() {
     const [user, setUser] = useState(null)
     const [activities, setActivities] = useState([])  // new state for real activities
     const [stats, setStats] = useState([
-        { name: 'Total Lessons', value: '-' },
-        { name: 'Completed', value: '-' },
-        { name: 'In Progress', value: '-' },
-        { name: 'Badges', value: '-' }
+        { name: 'Total Lessons', value: '-', emoji: '📚' },
+        { name: 'Completed', value: '-', emoji: '✅' },
+        { name: 'In Progress', value: '-', emoji: '🚀' },
+        { name: 'Badges', value: '-', emoji: '🏆' }
     ])
 
     useEffect(() => {
@@ -64,10 +64,10 @@ export default function DashboardPage() {
                 const badgeCount = badges.length
 
                 setStats([
-                    { name: 'Total Lessons', value: total },
-                    { name: 'Completed', value: completed },
-                    { name: 'In Progress', value: inProgress },
-                    { name: 'Badges', value: badgeCount }
+                    { name: 'Total Lessons', value: total, emoji: '📚' },
+                    { name: 'Completed', value: completed, emoji: '✅' },
+                    { name: 'In Progress', value: inProgress, emoji: '🚀' },
+                    { name: 'Badges', value: badgeCount, emoji: '🏆' }
                 ])
             } catch (err) {
                 console.error('Failed to fetch stats:', err)
@@ -117,16 +117,19 @@ export default function DashboardPage() {
     return (
         <ProtectedRoute>
             <div className="space-y-8">
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                    <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user.name}!</h1>
-                    <p className="mt-2 text-gray-600">Here's what's happening with your learning journey.</p>
+                <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300">
+                    <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user.name}! 👋</h1>
+                    <p className="mt-2 text-gray-600">Here's what's happening with your learning journey. 🌟</p>
                 </div>
 
                 {/* Stats */}
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat) => (
-                        <div key={stat.name} className="bg-white rounded-xl shadow-sm p-6">
-                            <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
+                        <div key={stat.name} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                            <dt className="text-sm font-medium text-gray-500 truncate flex items-center gap-2">
+                                <span className="text-xl">{stat.emoji}</span>
+                                {stat.name}
+                            </dt>
                             <dd className="mt-1 text-3xl font-semibold text-teal-600">{stat.value}</dd>
                         </div>
                     ))}
@@ -135,39 +138,51 @@ export default function DashboardPage() {
                 {/* Quick Actions */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <Link href="/dashboard/library"
-                          className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                          className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                         <div>
-                            <h3 className="text-lg font-medium text-gray-900">Study Materials</h3>
+                            <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                                <span className="text-xl">📖</span>
+                                Study Materials
+                            </h3>
                             <p className="mt-1 text-sm text-gray-500">Access your learning resources</p>
                         </div>
                     </Link>
 
                     <Link href="/dashboard/lessons"
-                          className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                          className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                         <div>
-                            <h3 className="text-lg font-medium text-gray-900">Continue Learning</h3>
+                            <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                                <span className="text-xl">🎯</span>
+                                Continue Learning
+                            </h3>
                             <p className="mt-1 text-sm text-gray-500">Pick up where you left off</p>
                         </div>
                     </Link>
 
                     <Link href="/dashboard/badges"
-                          className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                          className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                         <div>
-                            <h3 className="text-lg font-medium text-gray-900">Your Badges</h3>
+                            <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                                <span className="text-xl">🏅</span>
+                                Your Badges
+                            </h3>
                             <p className="mt-1 text-sm text-gray-500">View your achievements</p>
                         </div>
                     </Link>
                 </div>
 
                 {/* Recent Activity */}
-                <div className="bg-white rounded-xl shadow-sm">
+                <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="px-6 py-5">
-                        <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
+                        <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                            <span className="text-xl">📝</span>
+                            Recent Activity
+                        </h3>
                     </div>
                     <div className="border-t border-gray-200">
                         <ul className="divide-y divide-gray-200">
                             {activities.slice(0, 3).map((activity) => (
-                                <li key={activity.id} className="px-6 py-4">
+                                <li key={activity.id} className="px-6 py-4 hover:bg-gray-50 transition-colors duration-200">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0">
@@ -176,11 +191,11 @@ export default function DashboardPage() {
                                             <div className="ml-3">
                                                 <p className="text-lg font-semibold text-gray-900">
                                                     {activity.type === 'lesson_start'
-                                                        ? `Started the course ${activity.name}`
+                                                        ? `Started the course ${activity.name} 📚`
                                                         : activity.type === 'lesson_finished'
-                                                            ? `Finished the course ${activity.name}`
+                                                            ? `Finished the course ${activity.name} 🎉`
                                                             : activity.type === 'register'
-                                                                ? 'Successfully registered an account!!'
+                                                                ? 'Successfully registered an account! 🎊'
                                                                 : activity.name}
                                                 </p>
                                                 <p className="text-sm text-gray-500">

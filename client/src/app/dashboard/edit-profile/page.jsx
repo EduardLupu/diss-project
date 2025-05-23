@@ -52,7 +52,7 @@ export default function EditProfilePhotoPage() {
     <div className="py-10 flex items-center justify-center bg-teal-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-xl font-semibold mb-4 text-center">Choose a Profile Photo</h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 text-center items-center justify-items-center ">
           {avatars.map((avatar, index) =>
             avatar === 'upload' ? (
               <label

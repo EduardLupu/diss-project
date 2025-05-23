@@ -39,8 +39,11 @@ export default function DashboardLayout({children}) {
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <div className="flex-shrink-0 flex items-center">
-                                <Link href="/dashboard" className="text-xl font-bold text-teal-600">
-                                    EduWave
+                                <Link href="/dashboard" className="flex items-center space-x-2">
+                                    <img src="/favicon/favicon-32x32.png" alt="EduWave Logo" className="h-8 w-8" />
+                                    <span className="text-xl font-bold text-teal-600">
+                                        EduWave
+                                    </span>
                                 </Link>
                             </div>
                             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
