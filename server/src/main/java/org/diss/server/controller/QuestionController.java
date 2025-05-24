@@ -4,6 +4,7 @@ import org.diss.server.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,17 +38,20 @@ public class QuestionController {
         return new ResponseEntity<>(questionService.getQuestionsWithoutAnswerByLessonId(lessonId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/lesson/{lessonId}")
     public ResponseEntity<Question> addQuestion(@PathVariable Long lessonId, @RequestBody Question question) {
         Question savedQuestion = questionService.addQuestionToLesson(lessonId, question);
         return ResponseEntity.ok(savedQuestion);
     }
 
+    @PreAuthorize("hasRole('TEACHER')")
     @PutMapping("/{id}")
     public ResponseEntity<Question> updateQuestion(@PathVariable Long id, @RequestBody Question question) {
         return ResponseEntity.ok(questionService.updateQuestion(id, question));
     }
 
+    @PreAuthorize("hasRole('TEACHER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
         questionService.deleteQuestion(id);
