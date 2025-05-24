@@ -74,4 +74,11 @@ public class BadgeService {
         return badgeRepository.findByLessonId(lesson.getId());
     }
 
+    public void deleteBadgesByLessonId(Long lessonId) {
+        List<Badge> badges = badgeRepository.findByLessonId(lessonId);
+        if (badges.isEmpty()) {
+            throw new RuntimeException("No badges found for lesson with id: " + lessonId);
+        }
+        badgeRepository.deleteAll(badges);
+    }
 }

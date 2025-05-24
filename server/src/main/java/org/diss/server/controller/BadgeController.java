@@ -91,6 +91,12 @@ public class BadgeController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/lesson/{lessonId}")
+    public ResponseEntity<Void> deleteBadgesByLessonId(@PathVariable Long lessonId) {
+        badgeService.deleteBadgesByLessonId(lessonId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/lesson/{lessonId}")
     public ResponseEntity<List<Badge>> getBadgesByLessonId(@PathVariable Long lessonId) {
         List<Badge> badges = badgeService.getBadgesByLessonId(lessonId);
