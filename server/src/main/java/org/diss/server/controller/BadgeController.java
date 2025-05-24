@@ -73,6 +73,23 @@ public class BadgeController {
 
         return ResponseEntity.ok(earnedBadgeDTOs);
     }
+
+    @PostMapping("/lesson/{lessonId}")
+    public ResponseEntity<Badge> addBadge(@PathVariable Long lessonId, @RequestBody Badge badge) {
+        Badge savedBadge = badgeService.addBadgeToLesson(lessonId, badge);
+        return ResponseEntity.ok(savedBadge);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Badge> updateBadge(@PathVariable Long id, @RequestBody Badge badge) {
+        return ResponseEntity.ok(badgeService.updateBadge(id, badge));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBadge(@PathVariable Long id) {
+        badgeService.deleteBadge(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 
