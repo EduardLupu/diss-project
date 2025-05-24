@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Lesson {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "TEXT")

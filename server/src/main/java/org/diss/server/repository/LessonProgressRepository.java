@@ -15,4 +15,6 @@ public interface LessonProgressRepository extends JpaRepository<LessonProgress, 
     long countByUserAndCompletedTrue(UserInfo user);
 
     long countByUserAndCompletedFalse(UserInfo user);
+
+    void deleteByLessonId(Long lessonId);
 } 

@@ -1,6 +1,8 @@
 package org.diss.server.service;
 
+import jakarta.transaction.Transactional;
 import org.diss.server.entity.Lesson;
+import org.diss.server.repository.LessonProgressRepository;
 import org.diss.server.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,9 @@ public class LessonService {
 
     @Autowired
     private LessonRepository lessonRepository;
+
+    @Autowired
+    private LessonProgressRepository lessonProgressRepository;
 
     public List<Lesson> getAll() {
         return lessonRepository.findAll();
@@ -33,10 +38,13 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
+    @Transactional
     public void deleteLesson(Long id) {
         if (!lessonRepository.existsById(id)) {
             throw new RuntimeException("Lesson not found with id: " + id);
         }
+        lessonProgressRepository.deleteByLessonId(id);
+
         lessonRepository.deleteById(id);
     }
 
