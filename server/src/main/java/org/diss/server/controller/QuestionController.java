@@ -53,4 +53,10 @@ public class QuestionController {
         questionService.deleteQuestion(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/lesson/{lessonId}")
+    public ResponseEntity<Void> deleteQuestionsByLessonId(@PathVariable Long lessonId) {
+        questionService.deleteQuestionsByLessonId(lessonId);
+        return ResponseEntity.noContent().build();
+    }
 }

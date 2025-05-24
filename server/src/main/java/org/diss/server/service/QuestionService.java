@@ -78,4 +78,11 @@ public class QuestionService {
         questoionRepository.deleteById(id);
     }
 
+    public void deleteQuestionsByLessonId(Long lessonId) {
+        List<Question> questions = questoionRepository.findByLessonId(lessonId);
+        if (questions.isEmpty()) {
+            throw new RuntimeException("No questions found for lesson with id: " + lessonId);
+        }
+        questoionRepository.deleteAll(questions);
+    }
 }
