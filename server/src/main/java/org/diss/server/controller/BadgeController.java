@@ -102,6 +102,12 @@ public class BadgeController {
         List<Badge> badges = badgeService.getBadgesByLessonId(lessonId);
         return ResponseEntity.ok(badges);
     }
+
+    @GetMapping("/lesson/{lessonId}/id")
+    public ResponseEntity<Long> getBadgeIdByLessonId(@PathVariable Long lessonId) {
+        Long badgeId = badgeService.getBadgeIdByLessonId(lessonId);
+        return ResponseEntity.ok(badgeId);
+    }
 }
 
 

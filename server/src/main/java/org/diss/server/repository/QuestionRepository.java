@@ -26,4 +26,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             default -> throw new RuntimeException("Invalid option. Must be A, B, or C");
         };
     }
+
+    void deleteByLessonId(Long lessonId);
 }

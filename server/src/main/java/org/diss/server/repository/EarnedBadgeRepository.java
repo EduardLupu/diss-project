@@ -15,4 +15,6 @@ public interface EarnedBadgeRepository extends JpaRepository<EarnedBadge, Long> 
     List<EarnedBadge> findByUserId(Long userId);
 
     boolean existsByUserIdAndBadgeId(Long userId, Long badgeId);
+
+    void deleteByBadgeId(Long badgeId);
 }
