@@ -39,4 +39,9 @@ public class LessonService {
         }
         lessonRepository.deleteById(id);
     }
+
+    public Lesson getLessonById(Long id) {
+        return lessonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Lesson not found with id: " + id));
+    }
 }

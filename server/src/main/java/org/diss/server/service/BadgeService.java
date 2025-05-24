@@ -66,4 +66,12 @@ public class BadgeService {
         }
         badgeRepository.deleteById(id);
     }
+
+    public List<Badge> getBadgesByLessonId(Long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new RuntimeException("Lesson not found with id: " + lessonId));
+
+        return badgeRepository.findByLessonId(lesson.getId());
+    }
+
 }
