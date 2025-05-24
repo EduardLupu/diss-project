@@ -1,7 +1,6 @@
 // apiService.js
 
 const API_BASE_URL = 'https://api.eduwave.eduardlupu.com';
-
 /**
  * API service for handling requests to the backend
  */
@@ -183,6 +182,12 @@ const apiService = {
       }
     },
 
+    lesson: {
+      add(lessonData) {
+        return apiService.post('api/lesson', lessonData);
+      }
+    },
+
     /**
      * Register new user
      * @param {Object} userData - User registration data
@@ -248,7 +253,7 @@ const apiService = {
  * Fetches the profile picture by name and returns it as a Base64 data URL.
  * Also stores it in localStorage.
  * 
- * @param {string} pictureName - The filename (e.g., "avatar5.png")
+ * @param {string} pictureName - The filename (e.g., "avatar55.png")
  * @returns {Promise<string|null>} Base64 image data URL or null on failure
  */
 export async function getProfilePicture(pictureName) {
