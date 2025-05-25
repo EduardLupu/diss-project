@@ -4,7 +4,6 @@ import {useEffect, useState} from 'react'
 import {useRouter, usePathname} from 'next/navigation'
 import Link from 'next/link'
 import UserMenu from '@/components/UserMenu'
-import {ToastContainer} from "react-toastify";
 
 export default function DashboardLayout({children}) {
     const router = useRouter()
@@ -33,7 +32,6 @@ export default function DashboardLayout({children}) {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-teal-50 to-teal-100">
-            <ToastContainer position="bottom-center" autoClose={3000} hideProgressBar={false}/>
             <nav className="bg-white shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
