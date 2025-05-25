@@ -250,7 +250,7 @@ export default function EditLessonPage() {
                             className="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                             style={{ fontSize: '1.5rem', width: '120px' }}
                         >
-                            {['🥇', '❤️', '🏆', '🔥', '🚀'].map((emoji) => (
+                            {['🥇', '❤️', '🏆', '🔥', '🚀','👌','😼','🎓','🧠'].map((emoji) => (
                                 <option key={emoji} value={emoji}>
                                     {emoji}
                                 </option>
