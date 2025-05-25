@@ -238,12 +238,20 @@ export default function LessonsPage() {
                                         isInProgress={isInProgress}
                                     />
                                     {isTeacher && (
-                                        <button
-                                            onClick={() => handleDelete(lesson.id)}
-                                            className="absolute bottom-4 right-4 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-                                        >
-                                            Delete
-                                        </button>
+                                        <div className="absolute bottom-4 right-4 flex gap-2">
+                                            <button
+                                                onClick={() => router.push(`/dashboard/lessons/teacher/${lesson.id}`)}
+                                                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(lesson.id)}
+                                                className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             );
