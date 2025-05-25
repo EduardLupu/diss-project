@@ -8,6 +8,7 @@ import org.diss.server.service.BadgeService;
 import org.diss.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,17 +75,20 @@ public class BadgeController {
         return ResponseEntity.ok(earnedBadgeDTOs);
     }
 
+    @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/lesson/{lessonId}")
     public ResponseEntity<Badge> addBadge(@PathVariable Long lessonId, @RequestBody Badge badge) {
         Badge savedBadge = badgeService.addBadgeToLesson(lessonId, badge);
         return ResponseEntity.ok(savedBadge);
     }
 
+    @PreAuthorize("hasRole('TEACHER')")
     @PutMapping("/{id}")
     public ResponseEntity<Badge> updateBadge(@PathVariable Long id, @RequestBody Badge badge) {
         return ResponseEntity.ok(badgeService.updateBadge(id, badge));
     }
 
+    @PreAuthorize("hasRole('TEACHER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBadge(@PathVariable Long id) {
         badgeService.deleteBadge(id);
