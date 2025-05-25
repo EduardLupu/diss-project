@@ -124,8 +124,8 @@ export default function EditLessonPage() {
             const fetchedBadges = await apiService.get(`api/badge/lesson/${lessonId}`);
             await apiService.put(`api/badge/${fetchedBadges[0].id}`, badge);
 
-            toast.success('Lesson updated successfully! 🎉');
             router.push('/dashboard/lessons');
+            toast.success('Lesson updated successfully! 🎉');
         } catch (error) {
             console.error('Error updating lesson, questions or badge:', error);
             toast.error('Failed to update lesson, questions or badge.');

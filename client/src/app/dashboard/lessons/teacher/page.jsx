@@ -80,8 +80,8 @@ export default function AddLessonPage() {
             // Add badge
             await apiService.post(`/api/badge/lesson/${lessonId}`, badge);
 
-            toast.success('Lesson, questions, and badge added successfully! 🎉');
             router.push('/dashboard/lessons');
+            toast.success('Lesson, questions, and badge added successfully! 🎉');
         } catch (error) {
             console.error('Error adding lesson, questions or badge:', error);
             toast.error('Failed to add lesson, questions or badge.');
